@@ -1,7 +1,0 @@
-organization=ccy7701-1
-projectKey=ccy7701_UMSSAC_RE
-serverUrl=https://sonarcloud.io
-serverVersion=8.0.0.56801
-dashboardUrl=https://sonarcloud.io/dashboard?id=ccy7701_UMSSAC_RE
-ceTaskId=AZIuGTkuYFSjsyl5Jr-h
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZIuGTkuYFSjsyl5Jr-h
