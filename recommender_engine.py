@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import datetime
 
 app = Flask(__name__)
 
@@ -56,7 +57,8 @@ def recommend_partners():
     # Limit to top n = 10 recommendations
     top_recommendations = sorted_recommendations[:10]
 
-    print('Returning the top ten recommendations...')
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"({current_time}) Returning the top ten recommendations... ")
 
     return jsonify(top_recommendations)
 
