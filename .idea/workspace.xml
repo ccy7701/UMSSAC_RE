@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="248b72d8-a26c-43a2-9366-a590ecf0c8ee" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/timetable_fetcher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/UMSSAC_RE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/UMSSAC_RE.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/recommender_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/recommender_engine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/timetable_fetcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/subjects_list_fetcher.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,9 +38,11 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.recommender_engine.executor": "Run",
+    "Python.subjects_list_fetcher.executor": "Run",
     "Python.timetable_fetcher.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master"
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/xampp/htdocs/UMSSAC_PYAPI"
   }
 }]]></component>
   <component name="RecentsManager">

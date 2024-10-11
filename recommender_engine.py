@@ -12,7 +12,7 @@ def calculate_similarity(user_traits, other_traits):
     return similarity
 
 
-@app.route('/recommendationEngine', methods=['POST'])
+@app.route('/recommendation-engine', methods=['POST'])
 def recommend_partners():
     """
     This endpoint accepts the user's UserTraitsRecord, and that of other students,
