@@ -8,11 +8,10 @@ from urllib.parse import urljoin
 
 app = Flask(__name__)
 
-@app.route('/subjects-list-fetcher', methods=['POST'])
+@app.route('/all-subjects-list-fetcher', methods=['POST'])
 def fetch_subjects_list():
     # Define the main URL and the target file path for saving the JSON
     url = 'https://jadual.ums.edu.my/KuliahKK/finder.html'
-    # downloads_path = os.path.expanduser('~/Downloads/all_subjects_data.json')
     downloads_path = os.path.join(os.path.dirname(os.getcwd()), 'UMSSAC_SYSTEM', 'public', 'resources', 'data', 'all_subjects_data.json')
     response = requests.get(url)
 
@@ -34,7 +33,7 @@ def fetch_subjects_list():
             iframe_response = requests.get(full_iframe_url)
 
             if iframe_response.status_code == 200:
-                print("(PASS) IFRAME: Fetch successful")
+                print("(PASS) IFRAME-HTML: Fetch successful")
 
                 # Parse the iframe's HTML
                 iframe_soup = BeautifulSoup(iframe_response.content, 'html.parser')
@@ -92,6 +91,7 @@ def fetch_subjects_list():
             print("Iframe not found or missing 'src' attribute.")
     else:
         print(f"Failed to fetch main page. Status code: {response.status_code}")
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
