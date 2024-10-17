@@ -1,66 +1,70 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template_string
+from sklearn.neighbors import NearestNeighbors
+from sklearn.preprocessing import StandardScaler
 import datetime
+import matplotlib.pyplot as plt
+import numpy as np
+import plotly.graph_objs as go
+import json
+
 
 app = Flask(__name__)
 
-def calculate_similarity(user_traits, other_traits):
+def flatten_traits(traits):
     """
-    Function to calculate similarity between the current user and another student.
-    This can be expanded with more complex logic like cosine similarity, etc.
+    Flatten the traits dictionary into a single list of features (vector) for kNN input.
+    This function assumes that traits like 'wtc_data', 'personality_data', and 'skills_data'
+    are dictionaries or lists of numerical values.
     """
-    similarity = 1 - sum(abs(user_traits[key] - other_traits[key]) for key in user_traits.keys()) / len(user_traits)
-    return similarity
+    return (
+        list(traits['wtc_data'].values()) +
+        list(traits['personality_data'].values()) +
+        list(traits['skills_data'].values()) +
+        [traits['learning_style']]  # Add learning style as a single value
+    )
 
 
 @app.route('/recommendation-engine', methods=['POST'])
 def recommend_partners():
-    """
-    This endpoint accepts the user's UserTraitsRecord, and that of other students,
-    and returns recommended study partners based on similarity.
-    """
-    # Extract the current user's traits record
     own_record = request.json['user_traits_record']
-
-    # Extract the other students' records
     other_students_records = request.json['other_students_traits_records']
 
-    recommendations = []
+    # Flatten the current user's traits
+    own_features = flatten_traits(own_record)
 
-    # Compare the current user against all other students
+    # Create a list of profile IDs and a list of feature vectors for all other students
+    student_ids = []
+    student_features = []
+
     for student in other_students_records:
-        try:
-            # Calculate similarity between WTC data
-            similarity_wtc = calculate_similarity(own_record['wtc_data'], student['wtc_data'])
+        student_ids.append(student['profile_id'])
+        student_features.append(flatten_traits(student))
 
-            # Calculate similarity between personality data
-            similarity_personality = calculate_similarity(own_record['personality_data'], student['personality_data'])
+    # Convert to NumPy arrays
+    student_features_np = np.array(student_features)
+    own_features_np = np.array(own_features).reshape(1, -1)
 
-            # Calculate similarity between skills data
-            similarity_skills = calculate_similarity(own_record['skills_data'], student['skills_data'])
+    # Standardize features (z-score normalization)
+    scaler = StandardScaler()
+    student_features_np = scaler.fit_transform(student_features_np)
+    own_features_np = scaler.transform(own_features_np)
 
-            # Average the similarity scores (you can change this logic to weight certain traits more)
-            overall_similarity = (similarity_wtc + similarity_personality + similarity_skills) / 3
+    # Apply kNN with cosine similarity
+    knn = NearestNeighbors(n_neighbors=10, metric='cosine')
+    knn.fit(student_features_np)
+    distances, indices = knn.kneighbors(own_features_np)
 
-            # Append to the recommendation list
-            recommendations.append({
-                'profile_id': student['profile_id'],
-                'similarity': overall_similarity
-            })
-        except Exception as e:
-            # Handle any errors (such as missing keys, invalid data types, etc.)
-            print(f"Error processing student {student['profile_id']}: {e}")
-            continue  # Skip this student if there's an error
+    # Convert cosine distances to similarities
+    recommendations = [
+        {
+            'profile_id': student_ids[idx],
+            'similarity': 1 - dist  # Convert distance to similarity
+        }
+        for dist, idx in zip(distances[0], indices[0])
+    ]
 
-    # Sort by similarity (highest first)
-    sorted_recommendations = sorted(recommendations, key=lambda x: float(x['similarity']), reverse=True)
-
-    # Limit to top n = 10 recommendations
-    top_recommendations = sorted_recommendations[:10]
-
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"({current_time}) Returning the top ten recommendations... ")
-
-    return jsonify(top_recommendations)
+    # Return the top 10 recommendations
+    return jsonify(recommendations[:10])
 
 
 if __name__ == '__main__':
